@@ -1,0 +1,13 @@
+[T]     Right
+        If 1 Goto T
+        Right
+        If 0 Goto D
+[G]     Print 0
+        Left
+        Print 1
+        Right
+        Right
+        If 1 Goto G
+        Left
+[B]     Left
+        If 1 Goto B

@@ -1,0 +1,7 @@
+[R]     Right
+        If 1 Goto R
+        If X Goto R
+        Print X
+[L]     Left
+        If X Goto L
+        If 1 Goto L

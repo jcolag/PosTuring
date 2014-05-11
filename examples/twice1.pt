@@ -1,0 +1,17 @@
+[T]     Right
+        If 0 Goto Z
+        Print 0
+[G]     Right
+        If 1 Goto G
+[H]     Right
+        If 1 Goto H
+        Print 1
+        Right
+        Print 1
+[L]     Left
+        If 1 Goto L
+        Left
+[M]     Left
+        If 1 Goto M
+        If 0 Goto T
+[Z]     Right
