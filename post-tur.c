@@ -166,5 +166,7 @@ int main (int argc, char *argv[])
         }
  
  printf ("Program Terminated\n");
+ fclose (infile);
  return 0;
 }
+
