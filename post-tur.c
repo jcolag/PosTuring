@@ -43,13 +43,13 @@ void Print (char Symbol)
 void IF (char Symbol, char newlabel)
 {
  if (tape->symbol == Symbol)
-        if (label[newlabel] != -1)
-                ip = label[newlabel] - 1;
-        else
+        if (label[newlabel] == -1)
                 {
                  printf ("\nProgram Terminated\n");
                  exit (0);
                 }
+        else
+                ip = label[newlabel] - 1;
 }
 
 void Display (int nLeft)
@@ -101,7 +101,7 @@ int main (int argc, char *argv[])
          exit (1);
         }
 
- while (fscanf (infile, "%s", token) > 0)
+ while (fscanf (infile, "%15s", token) > 0)
         {
          switch (token[0] | 0x20)
                 {
@@ -115,15 +115,15 @@ int main (int argc, char *argv[])
                         label[token[1]] = currinst;
                         break;
                  case 'i':
-                        fscanf (infile, "%s", token);
+                        fscanf (infile, "%15s", token);
                         CodeSpace[currinst][0] = token[0] + 2;
-                        fscanf (infile, "%s", token);   /* Goto */
-                        fscanf (infile, "%s", token);
+                        fscanf (infile, "%15s", token);   /* Goto */
+                        fscanf (infile, "%15s", token);
                         CodeSpace[currinst++][1] = token[0];
                         break;
                  case 'p':
                         CodeSpace[currinst][0] = 2;
-                        fscanf (infile, "%s", token);
+                        fscanf (infile, "%15s", token);
                         CodeSpace[currinst++][1] = token[0];
                         break;
                  default:
@@ -134,7 +134,7 @@ int main (int argc, char *argv[])
 
  i = 0;
  printf ("Enter initial conditions:\n");
- scanf ("%[^\n\t]", initial);
+ scanf ("%127[^\n\t]", initial);
  for (cp = initial; *cp; cp++)
         {
          Print (*cp);
