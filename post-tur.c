@@ -45,11 +45,11 @@ void Print (char Symbol) {
 
 void IF (char Symbol, char newlabel) {
     if (tape->symbol == Symbol) {
-        if (label[newlabel] == -1) {
+        if (label[(int)newlabel] == -1) {
             printf ("\nProgram Terminated\n");
             exit (0);
         } else {
-            ip = label[newlabel] - 1;
+            ip = label[(int)newlabel] - 1;
         }
     }
 }
@@ -110,14 +110,14 @@ int main (int argc, char *argv[]) {
     }
 
     while (fscanf (infile, "%15s", token) > 0) {
-        switch (token[0] | 0x20) {
+        switch (tolower(token[0])) {
         case 'r':
             CodeSpace[currinst++][0] = 0;
             break;
         case 'l':
             CodeSpace[currinst++][0] = 1;
             break;
-        case ('[' | 0x20):
+        case '[':
             label[token[1]] = currinst;
             break;
         case 'i':
@@ -136,6 +136,7 @@ int main (int argc, char *argv[]) {
         default:
             fprintf (stderr, "Invalid program!!\n\n");
             exit (2);
+            break;
         }
     }
 
