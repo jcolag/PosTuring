@@ -14,6 +14,12 @@ int     CodeSpace[1024][2],
         label[256];
 
 /***
+ *** Function Prototypes
+ ***/
+
+int parse_post_turing(FILE *, FILE *, int[][2], int *);
+
+/***
  *** Language instruction functions
  ***/
 
@@ -109,36 +115,7 @@ int main (int argc, char *argv[]) {
         exit (1);
     }
 
-    while (fscanf (infile, "%15s", token) > 0) {
-        switch (tolower(token[0])) {
-        case 'r':
-            CodeSpace[currinst++][0] = 0;
-            break;
-        case 'l':
-            CodeSpace[currinst++][0] = 1;
-            break;
-        case '[':
-            label[token[1]] = currinst;
-            break;
-        case 'i':
-            fscanf (infile, "%15s", token);
-            CodeSpace[currinst][0] = token[0] + 2;
-                                        /* Goto */
-            fscanf (infile, "%15s", token);
-            fscanf (infile, "%15s", token);
-            CodeSpace[currinst++][1] = token[0];
-            break;
-        case 'p':
-            CodeSpace[currinst][0] = 2;
-            fscanf (infile, "%15s", token);
-            CodeSpace[currinst++][1] = token[0];
-            break;
-        default:
-            fprintf (stderr, "Invalid program!!\n\n");
-            exit (2);
-            break;
-        }
-    }
+    currinst = parse_post_turing(infile, stderr, CodeSpace, label);
 
     i = 0;
     printf ("Enter initial conditions:\n");
@@ -176,4 +153,42 @@ int main (int argc, char *argv[]) {
     printf ("Program Terminated\n");
     fclose (infile);
     return 0;
+}
+
+int parse_post_turing(FILE *file, FILE *errfile, int code[1024][2], int *labels) {
+    char    token[16];
+    int     currinst = 0;
+
+    while (fscanf (file, "%15s", token) > 0) {
+        switch (tolower(token[0])) {
+        case 'r':
+            code[currinst++][0] = 0;
+            break;
+        case 'l':
+            code[currinst++][0] = 1;
+            break;
+        case '[':
+            labels[token[1]] = currinst;
+            break;
+        case 'i':
+            fscanf (file, "%15s", token);
+            code[currinst][0] = token[0] + 2;
+                                        /* Goto */
+            fscanf (file, "%15s", token);
+            fscanf (file, "%15s", token);
+            code[currinst++][1] = token[0];
+            break;
+        case 'p':
+            code[currinst][0] = 2;
+            fscanf (file, "%15s", token);
+            code[currinst++][1] = token[0];
+            break;
+        default:
+            fprintf (errfile, "Invalid program!!\n\n");
+            exit (2);
+            break;
+        }
+    }
+
+    return currinst;
 }
