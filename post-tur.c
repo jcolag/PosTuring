@@ -20,6 +20,7 @@ int     CodeSpace[1024][2],
 /* Utility functions */
 
 int parse_post_turing (FILE *, FILE *, int[][2], int *);
+int interpret_post_turing (int, int [][2]);
 
 /* Language instructions */
 
@@ -73,9 +74,17 @@ int main (int argc, char *argv[]) {
         Left ();
     }
 
+    interpret_post_turing (currinst, CodeSpace);
+
+    printf ("Program Terminated\n");
+    fclose (infile);
+    return 0;
+}
+
+int interpret_post_turing (int line, int code[1024][2]) {
     Display (20);
-    for (ip = 0; ip < currinst; ip++) {
-        switch (CodeSpace[ip][0]) {
+    for (ip = 0; ip < line; ip++) {
+        switch (code[ip][0]) {
         case 0:
             Right ();
             break;
@@ -83,19 +92,15 @@ int main (int argc, char *argv[]) {
             Left ();
             break;
         case 2:
-            Print ((char)CodeSpace[ip][1]);
+            Print ((char)code[ip][1]);
             break;
         default:
-            IF ((char)(CodeSpace[ip][0] - 2), CodeSpace[ip][1]);
+            IF ((char)(code[ip][0] - 2), code[ip][1]);
             break;
         }
 
         Display (20);
     }
-
-    printf ("Program Terminated\n");
-    fclose (infile);
-    return 0;
 }
 
 int parse_post_turing (FILE *file, FILE *errfile, int code[1024][2], int *labels) {
