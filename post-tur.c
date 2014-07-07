@@ -11,7 +11,6 @@ struct  tape_pos {
 
 /* The Memory of the machine, the instruction pointer, and the symbol table */
 int     CodeSpace[1024][2],
-        ip,
         label[256];
 
 /***
@@ -28,7 +27,7 @@ void interpret_post_turing (int, int [][2]);
 void Right (void);
 void Left (void);
 void Print (char);
-void IF (char, char);
+void IF (char, char, int *);
 void Display (int);
 
 /***
@@ -84,9 +83,11 @@ int main (int argc, char *argv[]) {
 }
 
 void interpret_post_turing (int line, int code[1024][2]) {
+    int instruction;
+
     Display (20);
-    for (ip = 0; ip < line; ip++) {
-        switch (code[ip][0]) {
+    for (instruction = 0; instruction < line; instruction++) {
+        switch (code[instruction][0]) {
         case 0:
             Right ();
             break;
@@ -94,10 +95,10 @@ void interpret_post_turing (int line, int code[1024][2]) {
             Left ();
             break;
         case 2:
-            Print ((char)code[ip][1]);
+            Print ((char)code[instruction][1]);
             break;
         default:
-            IF ((char)(code[ip][0] - 2), code[ip][1]);
+            IF ((char)(code[instruction][0] - 2), code[instruction][1], &instruction);
             break;
         }
 
@@ -172,13 +173,13 @@ void Print (char Symbol) {
     tape->symbol = Symbol;
 }
 
-void IF (char Symbol, char newlabel) {
+void IF (char Symbol, char newlabel, int *instruction) {
     if (tape->symbol == Symbol) {
         if (label[(int)newlabel] == -1) {
             printf ("\nProgram Terminated\n");
             exit (0);
         } else {
-            ip = label[(int)newlabel] - 1;
+            *instruction = label[(int)newlabel] - 1;
         }
     }
 }
