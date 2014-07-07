@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,7 +21,7 @@ int     CodeSpace[1024][2],
 /* Utility functions */
 
 int parse_post_turing (FILE *, FILE *, int[][2], int *);
-int interpret_post_turing (int, int [][2]);
+void interpret_post_turing (int, int [][2]);
 
 /* Language instructions */
 
@@ -48,8 +49,9 @@ int main (int argc, char *argv[]) {
     }
 
     if (argc < 2) {
-        printf ("\nUsage:  %s <filename>\n\tWhere <filename>", argv[0]);
-        printf (" a valid Post-Turing program.\n\n");
+        printf (
+          "\nUsage:  %s <filename>\n\tWhere <filename> a valid Post-Turing program.\n\n",
+          argv[0]);
         exit (0);
     }
 
@@ -81,7 +83,7 @@ int main (int argc, char *argv[]) {
     return 0;
 }
 
-int interpret_post_turing (int line, int code[1024][2]) {
+void interpret_post_turing (int line, int code[1024][2]) {
     Display (20);
     for (ip = 0; ip < line; ip++) {
         switch (code[ip][0]) {
@@ -120,8 +122,7 @@ int parse_post_turing (FILE *file, FILE *errfile, int code[1024][2], int *labels
             break;
         case 'i':
             fscanf (file, "%15s", token);
-            code[line][0] = token[0] + 2;
-                                        /* Goto */
+            code[line][0] = token[0] + 2; /* Goto */
             fscanf (file, "%15s", token);
             fscanf (file, "%15s", token);
             code[line++][1] = token[0];
