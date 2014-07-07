@@ -36,15 +36,15 @@ void Display (int);
 
 int main (int argc, char *argv[]) {
     FILE  *infile;
-    char   initial[128], *cp;
-    int    currinst = 0, i;
+    char   initial[128], *inputc;
+    int    currinst = 0, idx;
 
     tape = malloc (sizeof (struct tape_pos));
     tape->right = tape->left = NULL;
     tape->symbol = '0';
 
-    for (i = 0; i < 256; i++) {
-        label[i] = -1;
+    for (idx = 0; idx < 256; idx++) {
+        label[idx] = -1;
     }
 
     if (argc < 2) {
@@ -62,16 +62,14 @@ int main (int argc, char *argv[]) {
 
     currinst = parse_post_turing(infile, stderr, CodeSpace, label);
 
-    i = 0;
     printf ("Enter initial conditions:\n");
     scanf ("%127[^\n\t]", initial);
-    for (cp = initial; *cp; cp++) {
-        Print (*cp);
+    for (inputc = initial, idx = 0; *inputc; inputc++, idx++) {
+        Print (*inputc);
         Right ();
-        ++i;
     }
 
-    for ( ; i >= 0; i--) {
+    for ( ; idx >= 0; idx--) {
         Left ();
     }
 
@@ -185,24 +183,24 @@ void IF (char Symbol, char newlabel, int *instruction) {
 }
 
 void Display (int nLeft) {
-    int         i;
+    int         pos;
     static int  count = 0;
 
-    for (i = 0; i < nLeft; i++) {
+    for (pos = 0; pos < nLeft; pos++) {
         putchar (' ');
     }
 
     putchar ('v');
     putchar ('\n');
 
-    for (i = 0; i < nLeft; i++) {
+    for (pos = 0; pos < nLeft; pos++) {
         Left ();
     }
-    for (i = 0; i < 79; i++) {
+    for (pos = 0; pos < 79; pos++) {
         putchar (tape->symbol);
         Right ();
     }
-    for (i = 0; i < (79 - nLeft); i++) {
+    for (pos = 0; pos < (79 - nLeft); pos++) {
         Left ();
     }
 
