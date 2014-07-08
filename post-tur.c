@@ -110,12 +110,6 @@ int parse_post_turing (FILE *file, FILE *errfile, int code[1024][2], int *labels
 
     while (fscanf (file, "%15s", token) > 0) {
         switch (tolower(token[0])) {
-        case 'r':                       /* Right */
-            code[line++][0] = 0;
-            break;
-        case 'l':                       /* Left */
-            code[line++][0] = 1;
-            break;
         case '[':                       /* Label */
             labels[token[1]] = line;
             break;
@@ -126,10 +120,16 @@ int parse_post_turing (FILE *file, FILE *errfile, int code[1024][2], int *labels
             fscanf (file, "%15s", token);
             code[line++][1] = token[0];
             break;
+        case 'l':                       /* Left */
+            code[line++][0] = 1;
+            break;
         case 'p':                       /* Print */
             code[line][0] = 2;
             fscanf (file, "%15s", token);
             code[line++][1] = token[0];
+            break;
+        case 'r':                       /* Right */
+            code[line++][0] = 0;
             break;
         default:                        /* Other */
             fprintf (errfile, "Invalid program!!\n\n");
@@ -139,6 +139,35 @@ int parse_post_turing (FILE *file, FILE *errfile, int code[1024][2], int *labels
     }
 
     return line;
+}
+
+/*
+ * Display() shows the local area of the tape around the head.
+ */
+void Display (int nLeft) {
+    int         pos;
+    static int  count = 0;
+
+    for (pos = 0; pos < nLeft; pos++) {
+        putchar (' ');
+    }
+
+    putchar ('v');
+    putchar ('\n');
+
+    for (pos = 0; pos < nLeft; pos++) {
+        Left ();
+    }
+    for (pos = 0; pos < 79; pos++) {
+        putchar (tape->symbol);
+        Right ();
+    }
+    for (pos = 0; pos < (79 - nLeft); pos++) {
+        Left ();
+    }
+
+    putchar ('\n');
+    ++count;
 }
 
 /***
@@ -193,33 +222,4 @@ void IF (char Symbol, char newlabel, int *instruction) {
             *instruction = label[(int)newlabel] - 1;
         }
     }
-}
-
-/*
- * Display() shows the local area of the tape around the head.
- */
-void Display (int nLeft) {
-    int         pos;
-    static int  count = 0;
-
-    for (pos = 0; pos < nLeft; pos++) {
-        putchar (' ');
-    }
-
-    putchar ('v');
-    putchar ('\n');
-
-    for (pos = 0; pos < nLeft; pos++) {
-        Left ();
-    }
-    for (pos = 0; pos < 79; pos++) {
-        putchar (tape->symbol);
-        Right ();
-    }
-    for (pos = 0; pos < (79 - nLeft); pos++) {
-        Left ();
-    }
-
-    putchar ('\n');
-    ++count;
 }
