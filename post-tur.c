@@ -79,7 +79,10 @@ int main (int argc, char *argv[]) {
     fclose (infile);
     return 0;
 }
-
+/*
+ * Core runtime engine.  Checks type of statement and executes
+ * appropriate function.
+ */
 void interpret_post_turing (int line, int code[1024][2]) {
     int instruction;
 
@@ -95,7 +98,7 @@ void interpret_post_turing (int line, int code[1024][2]) {
         case 2:
             Print ((char)code[instruction][1]);
             break;
-        default:
+        default:                        /* It's a label reference */
             IF ((char)(code[instruction][0] - 2), code[instruction][1], &instruction);
             break;
         }
@@ -104,6 +107,12 @@ void interpret_post_turing (int line, int code[1024][2]) {
     }
 }
 
+/*
+ * Straightforward parser for a very simple language.
+ * Only checks the first character of keywords to identify the
+ *   statements and ignores keywords that are only for structure.
+ * Leaves a code identifying the statement type and parameter if any.
+ */
 int parse_post_turing (FILE *file, FILE *errfile, int code[1024][2], int *labels) {
     char    token[16];
     int     line = 0;
@@ -111,14 +120,14 @@ int parse_post_turing (FILE *file, FILE *errfile, int code[1024][2], int *labels
     while (fscanf (file, "%15s", token) > 0) {
         switch (tolower(token[0])) {
         case '[':                       /* Label */
-            labels[token[1]] = line;
+            labels[token[1]] = line;        /* Label points to current line. */
             break;
         case 'i':                       /* If */
             fscanf (file, "%15s", token);
-            code[line][0] = token[0] + 2;   /* Goto */
+            code[line][0] = token[0] + 2;   /* Condition */
+            fscanf (file, "%15s", token);   /* Goto... */
             fscanf (file, "%15s", token);
-            fscanf (file, "%15s", token);
-            code[line++][1] = token[0];
+            code[line++][1] = token[0];     /* ...the label. */
             break;
         case 'l':                       /* Left */
             code[line++][0] = 1;
