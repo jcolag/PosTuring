@@ -27,7 +27,7 @@ void interpret_post_turing(int, int [][2]);
 void Right(void);
 void Left(void);
 void Print(char);
-void IF(char, char, int *);
+void Cond(char, char, int *);
 void Display(int);
 
 /***
@@ -99,7 +99,7 @@ void interpret_post_turing(int line, int code[1024][2]) {
             Print((char)code[instruction][1]);
             break;
         default:                        /* It's a label reference */
-            IF((char)(code[instruction][0] - 2), code[instruction][1], &instruction);
+            Cond((char)(code[instruction][0] - 2), code[instruction][1], &instruction);
             break;
         }
 
@@ -219,10 +219,10 @@ void Print(char Symbol) {
 }
 
 /*
- * IF() compares the current cell's contents to the symbol,
+ * Cond() compares the current cell's contents to the symbol,
  * and transfers control to the label if there's a match.
  */
-void IF(char Symbol, char newlabel, int *instruction) {
+void Cond(char Symbol, char newlabel, int *instruction) {
     if(tape->symbol == Symbol) {
         if(label[(int)newlabel] == -1) {
             printf("\nProgram Terminated\n");
