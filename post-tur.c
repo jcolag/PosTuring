@@ -110,28 +110,28 @@ int parse_post_turing (FILE *file, FILE *errfile, int code[1024][2], int *labels
 
     while (fscanf (file, "%15s", token) > 0) {
         switch (tolower(token[0])) {
-        case 'r':
+        case 'r':                       /* Right */
             code[line++][0] = 0;
             break;
-        case 'l':
+        case 'l':                       /* Left */
             code[line++][0] = 1;
             break;
-        case '[':
+        case '[':                       /* Label */
             labels[token[1]] = line;
             break;
-        case 'i':
+        case 'i':                       /* If */
             fscanf (file, "%15s", token);
-            code[line][0] = token[0] + 2; /* Goto */
+            code[line][0] = token[0] + 2;   /* Goto */
             fscanf (file, "%15s", token);
             fscanf (file, "%15s", token);
             code[line++][1] = token[0];
             break;
-        case 'p':
+        case 'p':                       /* Print */
             code[line][0] = 2;
             fscanf (file, "%15s", token);
             code[line++][1] = token[0];
             break;
-        default:
+        default:                        /* Other */
             fprintf (errfile, "Invalid program!!\n\n");
             exit (2);
             break;
@@ -145,6 +145,9 @@ int parse_post_turing (FILE *file, FILE *errfile, int code[1024][2], int *labels
  *** Language instruction functions
  ***/
 
+/*
+ * Right() moves the tape head to the cell to the right.
+ */
 void Right (void) {
     if (tape->right == NULL) {
         tape->right = malloc (sizeof (struct tape_pos));
@@ -156,6 +159,9 @@ void Right (void) {
     tape = tape->right;
 }
 
+/*
+ * Left()--surprise!--moves the tape head to the cell to the left.
+ */
 void Left (void) {
     if (tape->left == NULL) {
         tape->left = malloc (sizeof (struct tape_pos));
@@ -167,10 +173,17 @@ void Left (void) {
     tape = tape->left;
 }
 
+/*
+ * Print() writes a symbol to the current tape cell.
+ */
 void Print (char Symbol) {
     tape->symbol = Symbol;
 }
 
+/*
+ * IF() compares the current cell's contents to the symbol,
+ * and transfers control to the label if there's a match.
+ */
 void IF (char Symbol, char newlabel, int *instruction) {
     if (tape->symbol == Symbol) {
         if (label[(int)newlabel] == -1) {
@@ -182,6 +195,9 @@ void IF (char Symbol, char newlabel, int *instruction) {
     }
 }
 
+/*
+ * Display() shows the local area of the tape around the head.
+ */
 void Display (int nLeft) {
     int         pos;
     static int  count = 0;
