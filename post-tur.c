@@ -21,6 +21,7 @@ int CodeSpace[1024][2],
 
 int parse_post_turing(FILE *, FILE *, int[][2], int *);
 void interpret_post_turing(int, int [][2]);
+void Display(int);
 
 /* Language instructions */
 
@@ -28,7 +29,6 @@ void Right(void);
 void Left(void);
 void Print(char);
 void Cond(char, char, int *);
-void Display(int);
 
 /***
  *** Main program
