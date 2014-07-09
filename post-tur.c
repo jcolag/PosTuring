@@ -1,5 +1,4 @@
 #include <ctype.h>
-#include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -29,6 +28,7 @@ int CodeSpace[1024][2],
 
 int parse_post_turing(FILE *, FILE *, int[][2], int *);
 void interpret_post_turing(int, int [][2]);
+int write_to_tape(char *);
 void display_tape(int);
 void destroy_tape(void);
 
@@ -45,7 +45,7 @@ void Cond(char, char, int *);
 
 int main(int argc, char *argv[]) {
     FILE  *infile;
-    char   initial[128], *inputc;
+    char   initial[128];
     int    currinst = 0, idx;
 
     /*
@@ -60,7 +60,8 @@ int main(int argc, char *argv[]) {
     }
 
     if(argc < 2) {
-        printf(
+        fprintf(
+          stderr,
           "\nUsage:  %s <filename>\n\tWhere <filename> a valid Post-Turing program.\n\n",
           argv[0]);
         exit(0);
@@ -68,7 +69,7 @@ int main(int argc, char *argv[]) {
 
     infile = fopen(argv[1], "r");
     if(infile == NULL) {
-        printf("\nFile \"%s\" does not exist.\n\n", argv[1]);
+        fprintf(stderr, "\nFile \"%s\" does not exist.\n\n", argv[1]);
         exit(1);
     }
 
@@ -79,10 +80,7 @@ int main(int argc, char *argv[]) {
 
     printf("Enter initial conditions:\n");
     scanf("%127[^\n\t]", initial);
-    for(inputc = initial, idx = 0; *inputc; inputc++, idx++) {
-        Print(*inputc);
-        Right();
-    }
+    idx = write_to_tape(initial);
 
     for( ; idx >= 0; idx--) {
         Left();
@@ -90,7 +88,6 @@ int main(int argc, char *argv[]) {
 
     interpret_post_turing(currinst, CodeSpace);
 
-    printf("Program Terminated\n");
     fclose(infile);
     destroy_tape();
     return 0;
@@ -167,6 +164,22 @@ int parse_post_turing(FILE *file, FILE *errfile, int code[1024][2], int *labels)
 }
 
 /*
+ * write_to_tape() copies a string character-by-character onto the tape.
+ *   Returns the number of characters copied from the string.
+ */
+int write_to_tape(char *string) {
+    int     idx;
+    char   *inputc;
+
+    for(inputc = string, idx = 0; *inputc; inputc++, idx++) {
+        Print(*inputc);
+        Right();
+    }
+
+    return idx;
+}
+
+/*
  * display_tape() shows the local area of the tape around the head.
  */
 void display_tape(int nLeft) {
@@ -200,8 +213,7 @@ void display_tape(int nLeft) {
  */
 void destroy_tape(void)
 {
-    struct tape_pos    *head = tape,
-                       *shadow;
+    struct tape_pos    *head = tape;
 
     /* Move to the leftmost-allocated cell. */
     while (head->left) {
@@ -210,7 +222,7 @@ void destroy_tape(void)
 
     /* Head right, freeing each cell. */
     while (head) {
-        shadow = head;
+        struct tape_pos *shadow = head;
         head = head->right;
         free(shadow);
     }
