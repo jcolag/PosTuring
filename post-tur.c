@@ -3,11 +3,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/***
+ *** Data Structures
+ ***/
+
 struct tape_pos {
     char                symbol;
     struct tape_pos    *left,
                        *right;
 }                      *tape;
+
+/***
+ *** Global Variables
+ ***/
 
 /* The Memory of the machine, the instruction pointer, and the symbol table */
 int CodeSpace[1024][2],
@@ -39,6 +47,9 @@ int main(int argc, char *argv[]) {
     char   initial[128], *inputc;
     int    currinst = 0, idx;
 
+    /*
+     * Program Setup
+     */
     tape = malloc(sizeof(struct tape_pos));
     tape->right = tape->left = NULL;
     tape->symbol = '0';
@@ -60,6 +71,9 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
+    /*
+     * Parse and run.
+     */
     currinst = parse_post_turing(infile, stderr, CodeSpace, label);
 
     printf("Enter initial conditions:\n");
@@ -125,7 +139,7 @@ int parse_post_turing(FILE *file, FILE *errfile, int code[1024][2], int *labels)
         case 'i':                       /* If */
             fscanf(file, "%15s", token);
             code[line][0] = token[0] + 2;   /* Condition */
-            fscanf(file, "%15s", token);   /* Goto... */
+            fscanf(file, "%15s", token);    /* Goto... */
             fscanf(file, "%15s", token);
             code[line++][1] = token[0];     /* ...the label. */
             break;
@@ -185,6 +199,7 @@ void Display(int nLeft) {
 
 /*
  * Right() moves the tape head to the cell to the right.
+ *   Note that the tape is dynamically allocated as needed.
  */
 void Right(void) {
     if(tape->right == NULL) {
@@ -199,6 +214,7 @@ void Right(void) {
 
 /*
  * Left()--surprise!--moves the tape head to the cell to the left.
+ *   Note that the tape is dynamically allocated as needed.
  */
 void Left(void) {
     if(tape->left == NULL) {
