@@ -29,7 +29,8 @@ int CodeSpace[1024][2],
 
 int parse_post_turing(FILE *, FILE *, int[][2], int *);
 void interpret_post_turing(int, int [][2]);
-void Display(int);
+void display_tape(int);
+void destroy_tape(void);
 
 /* Language instructions */
 
@@ -91,6 +92,7 @@ int main(int argc, char *argv[]) {
 
     printf("Program Terminated\n");
     fclose(infile);
+    destroy_tape();
     return 0;
 }
 /*
@@ -100,7 +102,7 @@ int main(int argc, char *argv[]) {
 void interpret_post_turing(int line, int code[1024][2]) {
     int instruction;
 
-    Display(20);
+    display_tape(20);
     for(instruction = 0; instruction < line; instruction++) {
         switch(code[instruction][0]) {
         case 0:
@@ -117,7 +119,7 @@ void interpret_post_turing(int line, int code[1024][2]) {
             break;
         }
 
-        Display(20);
+        display_tape(20);
     }
 }
 
@@ -165,9 +167,9 @@ int parse_post_turing(FILE *file, FILE *errfile, int code[1024][2], int *labels)
 }
 
 /*
- * Display() shows the local area of the tape around the head.
+ * display_tape() shows the local area of the tape around the head.
  */
-void Display(int nLeft) {
+void display_tape(int nLeft) {
     int         pos;
     static int  count = 0;
 
@@ -191,6 +193,27 @@ void Display(int nLeft) {
 
     putchar('\n');
     ++count;
+}
+
+/*
+ * Destroy() wipes the dynamically-allocated tape cells.
+ */
+void destroy_tape(void)
+{
+    struct tape_pos    *head = tape,
+                       *shadow;
+
+    /* Move to the leftmost-allocated cell. */
+    while (head->left) {
+        head = head->left;
+    }
+
+    /* Head right, freeing each cell. */
+    while (head) {
+        shadow = head;
+        head = head->right;
+        free(shadow);
+    }
 }
 
 /***
