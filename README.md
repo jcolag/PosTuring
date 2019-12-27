@@ -1,9 +1,8 @@
-PosTuring
-=========
+# PosTuring
 
 Interpreter for a programming language based on the Post-Turing Machine
 
-###Post-Turing###
+## Post-Turing
 
 The [Post-Turing Machine](https://en.wikipedia.org/wiki/Post-Turing_machine) is a model developed by [Emil Post](https://en.wikipedia.org/wiki/Emil_Post) as a _program formulation_ variation of a [Turing Machine](https://en.wikipedia.org/wiki/Turing_machine).
 
@@ -11,11 +10,11 @@ A Post–Turing machine operates on an infinite sequence of storage locations, e
 
 The worker (comparable to a Turing Machine's "tape head") can move to the left or right, write to the current box, or make a decision based on the contents of the current box.
 
-###The Davis Model###
+## The Davis Model
 
 PosTuring is based primarily on a variation of the 1978 model developed by [Martin Davis](https://en.wikipedia.org/wiki/Martin_Davis).  As such, it strongly resembles the syntax of simple imperative programming languages like BASIC, while still retaining its own minimalist flavor.
 
-####Syntax####
+## Syntax
 
 PosTuring has four kinds of statements:
 
@@ -32,7 +31,7 @@ Labels are represented single ASCII characters.  Define them in the program by p
 
 Technically, the above is a lie.  The parser is written to be case-insensitive and only check the first character of each statement and make decisions assuming that any syntax that doesn't represent data can be ignored.  Therefore, `Right` can also be `right` or `R` or `roundaboutnineoclock`, if you prefer.  `If 0 Goto A` could very well be `indescribable 0 !@#blah$% X`.  Too many programming languages worry that the keywords are _just right_, when the result is just a loss of poetry...
 
-###The PosTuring Interpreter###
+## The PosTuring Interpreter
 
 Run the intepreter, giving the program name as a command-line parameters.  The interpreter will read the program and request:
 
@@ -42,7 +41,7 @@ This is the initial data in the boxes (or on the tape), encoded as `0`s and `1`s
 
 The interpreter will then execute the program, showing the contents of the boxes after each instruction until the program is complete.
 
-###Programming in PosTuring###
+## Programming in PosTuring
 
 The syntax, above, are presumably clear enough, and the semantics obvious from it.
 
@@ -52,7 +51,7 @@ It is also useful to consider the format of data.  Because each box contains onl
 
 At this time, there is no input or output facility other than direct, batch tape manipulation.  Future versions may concoct something appropriate to the data model and which doesn't impact the syntax too badly.
 
-###Examples###
+## Examples
 
 Four examples are provided with this distribution:
 
@@ -61,6 +60,6 @@ Four examples are provided with this distribution:
  - _twice1.pt_:  Doubles a number, represented in unary.
  - _twice2.pt_:  Not strict PosTuring, doubles a number represented in _binary_ notation, assuming a third symbol (`X`) can be used as an alphabet.  `0`s are used as delimiters, and the `X`s are used for binary zeroes.
 
-###Notes###
+## Notes
 
 This is _really_ old code.  I don't actually remember writing it.  I don't remember if I ever released it anywhere else.  It's also fairly ugly and does semi-strange things that a good programmer really wouldn't appreciate.  So, if you fall into a bottomless pit poking around in the source, don't come running to me...
