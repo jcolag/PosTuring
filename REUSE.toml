@@ -1,0 +1,9 @@
+version = 1
+
+[[annotations]]
+path = ["examples/twice2.pt", "examples/null.pt", "examples/twice1.pt", "examples/add1.pt"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2014 John Colagioia <john@colagioia.net>"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+
